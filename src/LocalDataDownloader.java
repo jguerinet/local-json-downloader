@@ -4,19 +4,11 @@
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.sun.net.ssl.*;
 import org.json.JSONObject;
-import sun.misc.BASE64Encoder;
 
 import javax.net.ssl.*;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -35,7 +27,6 @@ public class LocalDataDownloader {
     public static boolean basicAuthentication;
     public static String username = "";
     public static String password = "";
-    public static String directory = "";
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, KeyManagementException{
         //Make sure there are the correct number of arguments
@@ -52,15 +43,6 @@ public class LocalDataDownloader {
         if(basicAuthentication){
             username = args[3];
             password = args[4];
-
-            //Check if there is a directory
-            if(args.length == 6){
-                directory = args[5];
-            }
-        }
-        //Check if there is a directory
-        else if(args.length == 4){
-            directory = args[3];
         }
 
         //Set up the connection
@@ -119,7 +101,7 @@ public class LocalDataDownloader {
             JSONObject dataJSON = new JSONObject(dataString);
 
             //Set up the file writer
-            PrintWriter writer = new PrintWriter(directory + (directory.endsWith("/") ? "" : "/") + fileName, "UTF-8");
+            PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 
             //Set up the JSON Object Writer
             ObjectMapper mapper = new ObjectMapper();

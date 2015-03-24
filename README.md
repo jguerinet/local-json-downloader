@@ -7,11 +7,10 @@ It will also check that the JSON is valid.
 ## Instructions
 You must give it the following parameters (in this order):
 * The URL to the JSON
-* The name of the text file you want to save
+* The name of the text file you want to save (with an absolute path if desired)
 * True if there is basic authentication on the URL, false otherwise
 * If the above is true, the username for authentication
 * If the above is true, the password for authentication
-* The of the directory you want to save your file in. If left blank, the file will be saved in the project directory
 
 ## Directories
 * libs: All of the necessary external libraries (in jar format)
