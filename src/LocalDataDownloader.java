@@ -107,7 +107,10 @@ public class LocalDataDownloader {
             ObjectWriter objectWriter = mapper.writer().withDefaultPrettyPrinter();
 
             //Write the JSON to the file
-            writer.print(objectWriter.writeValueAsString(dataJSON));
+            String string = objectWriter.writeValueAsString(dataJSON);
+            writer.print(string);
+            writer.flush();
+            writer.close();
 
             System.out.println("Writing complete, aborting");
         }
