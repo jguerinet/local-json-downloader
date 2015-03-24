@@ -6,6 +6,7 @@ It will also check that the JSON is valid.
 
 ## Instructions
 You must give it the following parameters (in this order):
+
 * The URL to the JSON
 * The name of the text file you want to save (with an absolute path if desired)
 * True if there is basic authentication on the URL, false otherwise
