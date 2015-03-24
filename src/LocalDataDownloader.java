@@ -2,6 +2,8 @@
  * Copyright (c) 2015 Julien Guerinet. All rights reserved.
  */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.sun.net.ssl.*;
 import org.json.JSONObject;
 import sun.misc.BASE64Encoder;
@@ -12,10 +14,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,7 +35,7 @@ public class LocalDataDownloader {
     public static boolean basicAuthentication;
     public static String username = "";
     public static String password = "";
-    public static String directory = null;
+    public static String directory = "";
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, KeyManagementException{
         //Make sure there are the correct number of arguments
@@ -118,6 +117,18 @@ public class LocalDataDownloader {
 
             //Convert it to JSON
             JSONObject dataJSON = new JSONObject(dataString);
+
+            //Set up the file writer
+            PrintWriter writer = new PrintWriter(directory + (directory.endsWith("/") ? "" : "/") + fileName, "UTF-8");
+
+            //Set up the JSON Object Writer
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectWriter objectWriter = mapper.writer().withDefaultPrettyPrinter();
+
+            //Write the JSON to the file
+            writer.print(objectWriter.writeValueAsString(dataJSON));
+
+            System.out.println("Writing complete, aborting");
         }
         else{
             System.out.println("Response Code not 200, aborting");
