@@ -3,6 +3,7 @@
  */
 
 import com.sun.net.ssl.*;
+import org.json.JSONObject;
 import sun.misc.BASE64Encoder;
 
 import javax.net.ssl.*;
@@ -104,6 +105,22 @@ public class LocalDataDownloader {
         if(basicAuthentication){
             String basicAuth = new String(Base64.getEncoder().encode((username + ":" + password).getBytes()));
             connection.setRequestProperty("Authorization", "Basic " + basicAuth);
+        }
+
+        connection.connect();
+        int responseCode = connection.getResponseCode();
+        System.out.println("Response Code: " + responseCode);
+
+        //Only do something if the response code was 200
+        if(responseCode == 200){
+            //Get the data
+            String dataString = downloadString(connection.getInputStream());
+
+            //Convert it to JSON
+            JSONObject dataJSON = new JSONObject(dataString);
+        }
+        else{
+            System.out.println("Response Code not 200, aborting");
         }
     }
 
