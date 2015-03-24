@@ -28,7 +28,8 @@ public class LocalDataDownloader {
     public static String username = "";
     public static String password = "";
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, KeyManagementException{
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
+            KeyManagementException{
         //Make sure there are the correct number of arguments
         if(args.length < 3){
             throw new IllegalArgumentException("You must have at least 3 arguments");
@@ -84,7 +85,8 @@ public class LocalDataDownloader {
 
         //Add the basic auth if needed
         if(basicAuthentication){
-            String basicAuth = new String(Base64.getEncoder().encode((username + ":" + password).getBytes()));
+            String basicAuth = new String(Base64.getEncoder().encode(
+                    (username + ":" + password).getBytes()));
             connection.setRequestProperty("Authorization", "Basic " + basicAuth);
         }
 
