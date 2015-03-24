@@ -1,0 +1,21 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Default template
+*.iml
+.idea/
+out/
+*.class
+*.jar
+*.war
+*.ear
+.DS_Store
+bin/
+gen/
+.gradle
+local.properties
+Thumbs.db
+.metadata
+.settings/
+tmp/
+*.apk
+*.bar
+
