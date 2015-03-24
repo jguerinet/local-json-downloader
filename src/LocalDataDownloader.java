@@ -2,9 +2,9 @@
  * Copyright (c) 2015 Julien Guerinet. All rights reserved.
  */
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.json.JSONObject;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -97,14 +97,13 @@ public class LocalDataDownloader {
             //Get the data
             String dataString = downloadString(connection.getInputStream());
 
-            //Convert it to JSON
-            JSONObject dataJSON = new JSONObject(dataString);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode dataJSON = mapper.readTree(dataString);
 
             //Set up the file writer
             PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 
             //Set up the JSON Object Writer
-            ObjectMapper mapper = new ObjectMapper();
             ObjectWriter objectWriter = mapper.writer().withDefaultPrettyPrinter();
 
             //Write the JSON to the file
