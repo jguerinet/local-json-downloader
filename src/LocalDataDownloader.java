@@ -22,12 +22,6 @@ import java.util.Base64;
  * @since 1.0
  */
 public class LocalDataDownloader {
-    public static String urlString;
-    public static String fileName;
-    public static boolean basicAuthentication;
-    public static String username = "";
-    public static String password = "";
-
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
             KeyManagementException{
         //Make sure there are the correct number of arguments
@@ -36,14 +30,20 @@ public class LocalDataDownloader {
         }
 
         //Get the needed info from the args
-        urlString = args[0];
-        fileName = args[1];
-        basicAuthentication = Boolean.valueOf(args[2]);
+        String urlString = args[0];
+        String fileName = args[1];
+        boolean basicAuthentication = Boolean.valueOf(args[2]);
 
         //If we need basic auth, get the information
+        String username;
+        String password;
         if(basicAuthentication){
             username = args[3];
             password = args[4];
+        }
+        else{
+            username = "";
+            password = "";
         }
 
         //Set up the connection
