@@ -13,10 +13,10 @@ You must give it the following parameters (in this order):
 
 * The URL to the JSON
 * The name of the text file you want to save (with an absolute path if desired)
-* ImmunizeCA Branch Only: The path of the folder to save the images in
 * True if there is basic authentication on the URL, false otherwise
 * If the above is true, the username for authentication
 * If the above is true, the password for authentication
+* ImmunizeCA Branch Only: The path of the folder to save the images in if we are downloading images
 
 ## Branches
 * master: Contains the main code 
