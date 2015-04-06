@@ -19,7 +19,7 @@ import java.util.Base64;
 /**
  * Main file
  * @author Julien Guerinet
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
 public class LocalDataDownloader {
