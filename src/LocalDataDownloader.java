@@ -5,6 +5,7 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -22,28 +23,31 @@ import java.util.Base64;
  * @since 1.0
  */
 public class LocalDataDownloader {
-    public static String urlString;
-    public static String fileName;
-    public static boolean basicAuthentication;
-    public static String username = "";
-    public static String password = "";
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
             KeyManagementException{
         //Make sure there are the correct number of arguments
-        if(args.length < 3){
-            throw new IllegalArgumentException("You must have at least 3 arguments");
+        if(args.length < 4){
+            throw new IllegalArgumentException("You must have at least 4 arguments");
         }
 
         //Get the needed info from the args
-        urlString = args[0];
-        fileName = args[1];
-        basicAuthentication = Boolean.valueOf(args[2]);
+        String urlString = args[0];
+        String fileName = args[1];
+        String bannersLocation = args[2];
+
+        boolean basicAuthentication = Boolean.valueOf(args[3]);
 
         //If we need basic auth, get the information
+        String username;
+        String password;
         if(basicAuthentication){
-            username = args[3];
-            password = args[4];
+            username = args[4];
+            password = args[5];
+        }
+        else{
+            username = "";
+            password = "";
         }
 
         //Set up the connection
@@ -102,6 +106,28 @@ public class LocalDataDownloader {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode dataJSON = mapper.readTree(dataString);
 
+            //Go through the nodes that have a Banner Id
+            for(JsonNode node : dataJSON.findParents("BannerId")){
+                // Go through the banner's image links
+                JsonNode imageJSON = node.get("Image");
+
+                long bannerId = node.get("BannerId").asLong();
+
+                //Download the English image
+                String englishFile = downloadImage(bannersLocation, imageJSON.get("en").asText(),
+                        bannerId, "en");
+
+                //Replace the English image path with the file name
+                ((ObjectNode)imageJSON).put("en", englishFile);
+
+                //Download the French image
+                String frenchFile = downloadImage(bannersLocation, imageJSON.get("fr").asText(),
+                        bannerId, "fr");
+
+                //Replace the French image path with the file name
+                ((ObjectNode)imageJSON).put("fr", frenchFile);
+            }
+
             //Set up the file writer
             PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 
@@ -140,5 +166,40 @@ public class LocalDataDownloader {
 
         //Return the String received
         return builder.toString();
+    }
+
+    /**
+     * Download the banner image
+     *
+     * @param imagePath  The folder to store the image in
+     * @param imageURL   The image URL
+     * @param bannerId   The banner Id for the file name
+     * @param languageId The language Id for the file name
+     * @return The file name
+     * @throws IOException
+     */
+    private static String downloadImage(String imagePath, String imageURL, long bannerId,
+                                      String languageId) throws IOException{
+        //Set up the file name
+        String fileName = "banner" + bannerId + "-" + languageId + ".jpg";
+
+        URL url = new URL(imageURL);
+        InputStream in = new BufferedInputStream(url.openStream());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buf = new byte[1024];
+        int n;
+        while ((n = in.read(buf)) != -1){
+            out.write(buf, 0, n);
+        }
+
+        out.close();
+        in.close();
+        byte[] response = out.toByteArray();
+
+        FileOutputStream fos = new FileOutputStream(imagePath + "/" + fileName);
+        fos.write(response);
+        fos.close();
+
+        return fileName;
     }
 }
