@@ -27,27 +27,29 @@ public class LocalDataDownloader {
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
             KeyManagementException{
         //Make sure there are the correct number of arguments
-        if(args.length < 4){
-            throw new IllegalArgumentException("You must have at least 4 arguments");
+        if(args.length < 3){
+            throw new IllegalArgumentException("You must have at least 3 arguments");
         }
 
         //Get the needed info from the args
         String urlString = args[0];
         String fileName = args[1];
-        String bannersLocation = args[2];
 
-        boolean basicAuthentication = Boolean.valueOf(args[3]);
+        boolean basicAuthentication = Boolean.valueOf(args[2]);
 
         //If we need basic auth, get the information
         String username;
         String password;
+        String bannersLocation;
         if(basicAuthentication){
-            username = args[4];
-            password = args[5];
+            username = args[3];
+            password = args[4];
+            bannersLocation = args.length == 6 ? args[5] : "";
         }
         else{
             username = "";
             password = "";
+            bannersLocation = args.length == 4 ? args[3] : "";
         }
 
         //Set up the connection
