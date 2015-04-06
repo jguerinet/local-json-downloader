@@ -1,5 +1,9 @@
 # Local Data Downloader
 
+## Version History
+* Version 1.1 - April 06, 2015 (ImmunizeCA Branch)
+* Version 1.0 - March 24, 2015 (Initial Code)
+
 ## Summary
 The Local Data Downloader takes the JSON at the given URL and saves it to a text file, with the proper formatting.
 It will also check that the JSON is valid.
