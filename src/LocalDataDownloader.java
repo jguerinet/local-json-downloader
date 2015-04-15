@@ -16,34 +16,85 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 /**
- * Main file
+ * Main class, executes the main code for downloading and saving the local data
  * @author Julien Guerinet
  * @version 1.1
  * @since 1.0
  */
 public class LocalDataDownloader {
+   /* FILE STRINGS */
+    /**
+     * The URL in the file
+     */
+    private static final String URL = "URL:";
+    /**
+     * The name of the text file you want to save (with an absolute path if desired)
+     */
+    private static final String FILE_NAME = "File Name:";
+    /**
+     * Username for authentication, if any
+     */
+    private static final String USERNAME = "Username:";
+    /**
+     * Password for authentication, if any
+     */
+    private static final String PASSWORD = "Password:";
+
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
             KeyManagementException{
-        //Make sure there are the correct number of arguments
-        if(args.length < 3){
-            throw new IllegalArgumentException("You must have at least 3 arguments");
+        //Instantiate the instance variables
+        String urlString = null;
+        String fileName = null;
+        String username = null;
+        String password = null;
+
+        //Read from the config file
+        BufferedReader configReader = null;
+        try{
+            configReader = new BufferedReader(new FileReader("../config.txt"));
+        }
+        catch(FileNotFoundException e){
+            try{
+                configReader = new BufferedReader(new FileReader("config.txt"));
+            }
+            catch(FileNotFoundException ex){
+                System.out.println("Error: Config file not found");
+                System.exit(-1);
+            }
         }
 
-        //Get the needed info from the args
-        String urlString = args[0];
-        String fileName = args[1];
-        boolean basicAuthentication = Boolean.valueOf(args[2]);
-
-        //If we need basic auth, get the information
-        String username;
-        String password;
-        if(basicAuthentication){
-            username = args[3];
-            password = args[4];
+        //Go through the file, line by line
+        String line;
+        while ((line = configReader.readLine()) != null) {
+            //Get the URL
+            if(line.startsWith(URL)){
+                urlString = line.replace(URL, "").trim();
+            }
+            //Get the file name
+            else if(line.startsWith(FILE_NAME)){
+                //Remove the header
+                fileName = line.replace(FILE_NAME, "").trim();
+            }
+            //Get the username
+            else if(line.startsWith(USERNAME)){
+                username = line.replace(USERNAME, "").trim();
+            }
+            //Get the password
+            else if(line.startsWith(PASSWORD)){
+                password = line.replace(PASSWORD, "").trim();
+            }
         }
-        else{
-            username = "";
-            password = "";
+        configReader.close();
+
+        //Make there is a URL
+        if(urlString == null){
+            System.out.println("Error: URL Cannot be null");
+            System.exit(-1);
+        }
+        //Make sure there is a file path
+        else if(fileName == null){
+            System.out.println("Error: The file cannot be null");
+            System.exit(-1);
         }
 
         //Set up the connection
@@ -84,7 +135,7 @@ public class LocalDataDownloader {
         }
 
         //Add the basic auth if needed
-        if(basicAuthentication){
+        if(username != null && password != null){
             String basicAuth = new String(Base64.getEncoder().encode(
                     (username + ":" + password).getBytes()));
             connection.setRequestProperty("Authorization", "Basic " + basicAuth);
@@ -118,6 +169,7 @@ public class LocalDataDownloader {
         }
         else{
             System.out.println("Response Code not 200, aborting");
+            System.out.println("Response Message: " + connection.getResponseMessage());
         }
     }
 
