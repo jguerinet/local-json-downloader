@@ -141,6 +141,7 @@ public class LocalDataDownloader {
             connection.setRequestProperty("Authorization", "Basic " + basicAuth);
         }
 
+        System.out.println("Connecting...");
         connection.connect();
         int responseCode = connection.getResponseCode();
         System.out.println("Response Code: " + responseCode);
