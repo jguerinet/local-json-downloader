@@ -26,7 +26,7 @@ public class LocalDataDownloader {
     /**
      * The URL in the file
      */
-    private static final String URL = "URL:";
+    private static final String URL = " Data URL:";
     /**
      * The name of the text file you want to save (with an absolute path if desired)
      */

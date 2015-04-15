@@ -3,7 +3,7 @@
 3. Fill out the info below (username and password are for basic auth and are optional)
 4. Run the jar file.
 
-URL: DATA_URL_HERE
+Data URL: DATA_URL_HERE
 File Name: FILE_NAME_HERE
 
 Username: USERNAME_HERE
