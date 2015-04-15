@@ -6,13 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 /**
@@ -26,7 +24,7 @@ public class LocalDataDownloader {
     /**
      * The URL in the file
      */
-    private static final String URL = " Data URL:";
+    private static final String URL = "Data URL:";
     /**
      * The name of the text file you want to save (with an absolute path if desired)
      */
@@ -44,7 +42,6 @@ public class LocalDataDownloader {
             KeyManagementException{
         //Instantiate the instance variables
         String urlString = null;
-        String fileName = null;
         String username = null;
         String password = null;
 
@@ -70,11 +67,6 @@ public class LocalDataDownloader {
             if(line.startsWith(URL)){
                 urlString = line.replace(URL, "").trim();
             }
-            //Get the file name
-            else if(line.startsWith(FILE_NAME)){
-                //Remove the header
-                fileName = line.replace(FILE_NAME, "").trim();
-            }
             //Get the username
             else if(line.startsWith(USERNAME)){
                 username = line.replace(USERNAME, "").trim();
@@ -83,56 +75,35 @@ public class LocalDataDownloader {
             else if(line.startsWith(PASSWORD)){
                 password = line.replace(PASSWORD, "").trim();
             }
+            //Get the file name - signifies the end of the info for one file
+            else if(line.startsWith(FILE_NAME)){
+                //Download the info with the given information
+                downloadInfo(urlString, line.replace(FILE_NAME, "").trim(), username, password);
+                //Reset everything
+                urlString = null;
+                username = null;
+                password = null;
+            }
         }
         configReader.close();
+    }
 
+    private static void downloadInfo(String urlString, String fileName, String username,
+                                     String password) throws IOException{
         //Make there is a URL
         if(urlString == null){
-            System.out.println("Error: URL Cannot be null");
-            System.exit(-1);
+            System.out.println("Error: URL Cannot be null. Skipping");
+            return;
         }
         //Make sure there is a file path
         else if(fileName == null){
-            System.out.println("Error: The file cannot be null");
-            System.exit(-1);
+            System.out.println("Error: The file name cannot be null. Skipping");
+            return;
         }
 
         //Set up the connection
         URL url = new URL(urlString);
-        HttpURLConnection connection;
-
-        //Check if we need an HTTP or HTTPS connection
-        if(urlString.contains("https")){
-            //This wil trust all certificates
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return null;
-                        }
-                        @Override
-                        public void checkClientTrusted(X509Certificate[] arg0, String arg1)
-                                throws java.security.cert.CertificateException {}
-                        @Override
-                        public void checkServerTrusted(X509Certificate[] arg0, String arg1)
-                                throws java.security.cert.CertificateException {}
-                    }
-            };
-
-            //Set up the SSL encryption
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
-
-            connection = (HttpsURLConnection) url.openConnection();
-        }
-        else{
-            connection = (HttpURLConnection) url.openConnection();
-        }
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         //Add the basic auth if needed
         if(username != null && password != null){
@@ -141,7 +112,7 @@ public class LocalDataDownloader {
             connection.setRequestProperty("Authorization", "Basic " + basicAuth);
         }
 
-        System.out.println("Connecting...");
+        System.out.println("Connecting to " + urlString);
         connection.connect();
         int responseCode = connection.getResponseCode();
         System.out.println("Response Code: " + responseCode);
@@ -166,10 +137,10 @@ public class LocalDataDownloader {
             writer.flush();
             writer.close();
 
-            System.out.println("Writing complete, aborting");
+            System.out.println("Writing complete");
         }
         else{
-            System.out.println("Response Code not 200, aborting");
+            System.out.println("Response Code not 200, skipping");
             System.out.println("Response Message: " + connection.getResponseMessage());
         }
     }
