@@ -1,10 +1,10 @@
 1. Copy this file into the root of your repository. 
 2. Rename it config.txt
 3. Fill out the info below (username and password are for basic auth and are optional)
+4. Copy paste the block below as many times as needed (for multiple data files). Order matters.
 4. Run the jar file.
 
 Data URL: DATA_URL_HERE
-File Name: FILE_NAME_HERE
-
 Username: USERNAME_HERE
 Password: PASSWORD_HERE
+File Name: FILE_NAME_HERE
