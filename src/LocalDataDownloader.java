@@ -77,6 +77,8 @@ public class LocalDataDownloader {
             }
             //Get the file name - signifies the end of the info for one file
             else if(line.startsWith(FILE_NAME)){
+                //Have a line separation for each file
+                System.out.println();
                 //Download the info with the given information
                 downloadInfo(urlString, line.replace(FILE_NAME, "").trim(), username, password);
                 //Reset everything
@@ -137,7 +139,7 @@ public class LocalDataDownloader {
             writer.flush();
             writer.close();
 
-            System.out.println("Writing complete");
+            System.out.println("Writing to " + fileName + " complete.");
         }
         else{
             System.out.println("Response Code not 200, skipping");
