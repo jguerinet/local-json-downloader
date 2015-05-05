@@ -19,7 +19,7 @@ import java.util.Base64;
 /**
  * Main class, executes the main code for downloading and saving the local data
  * @author Julien Guerinet
- * @version 1.2
+ * @version 1.4
  * @since 1.0
  */
 public class LocalDataDownloader {

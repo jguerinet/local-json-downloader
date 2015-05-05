@@ -1,6 +1,7 @@
 # Local Data Downloader
 
 ## Version History
+* Version 1.4 - May 05, 2015 (Using okio and okhttp)
 * Version 1.3 - April 16, 2015 (Added logging)
 * Version 1.2 - April 15, 2015 (Use of a config file and multiple data file support)
 * Version 1.1 - April 06, 2015 (ImmunizeCA Branch)
