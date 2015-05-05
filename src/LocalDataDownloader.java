@@ -5,6 +5,9 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -104,28 +107,26 @@ public class LocalDataDownloader {
         }
 
         //Set up the connection
-        URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        Request.Builder builder = new Request.Builder()
+                .get()
+                .url(urlString);
 
         //Add the basic auth if needed
         if(username != null && password != null){
             String basicAuth = new String(Base64.getEncoder().encode(
                     (username + ":" + password).getBytes()));
-            connection.setRequestProperty("Authorization", "Basic " + basicAuth);
+            builder.addHeader("Authorization", "Basic " + basicAuth);
         }
 
         System.out.println("Connecting to " + urlString);
-        connection.connect();
-        int responseCode = connection.getResponseCode();
+        Response response = new OkHttpClient().newCall(builder.build()).execute();
+        int responseCode = response.code();
         System.out.println("Response Code: " + responseCode);
 
         //Only do something if the response code was 200
         if(responseCode == 200){
-            //Get the data
-            String dataString = downloadString(connection.getInputStream());
-
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode dataJSON = mapper.readTree(dataString);
+            JsonNode dataJSON = mapper.readTree(response.body().string());
 
             //Set up the file writer
             PrintWriter writer = new PrintWriter(fileName, "UTF-8");
@@ -143,28 +144,7 @@ public class LocalDataDownloader {
         }
         else{
             System.out.println("Response Code not 200, skipping");
-            System.out.println("Response Message: " + connection.getResponseMessage());
+            System.out.println("Response Message: " + response.message());
         }
-    }
-
-    /**
-     * Takes an input stream and downloads whatever is in it in a String format
-     *
-     * @param inputStream The input stream
-     * @return The contents in a String
-     * @throws IOException
-     */
-    private static String downloadString(InputStream inputStream) throws IOException {
-        //Read the JSON from the input stream
-        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder builder = new StringBuilder();
-
-        String line;
-        while ((line = in.readLine()) != null) {
-            builder.append(line);
-        }
-
-        //Return the String received
-        return builder.toString();
     }
 }
