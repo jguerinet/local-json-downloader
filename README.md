@@ -1,4 +1,4 @@
-# Local Data Downloader
+# Local JSON Downloader
 
 ## Summary
 The Local JSON Downloader takes the JSON at the given URL(s) and saves it to a text file, with the proper formatting.
