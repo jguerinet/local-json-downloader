@@ -1,33 +1,45 @@
 # Local Data Downloader
 
-## Version History
-* Version 1.4 - May 05, 2015 (Using okio and okhttp)
-* Version 1.3 - April 16, 2015 (Added logging)
-* Version 1.2 - April 15, 2015 (Use of a config file and multiple data file support)
-* Version 1.1 - April 06, 2015 (ImmunizeCA Branch)
-* Version 1.0 - March 24, 2015 (Initial Code)
-
 ## Summary
-The Local Data Downloader takes the JSON at the given URL(s) and saves it to a text file, with the proper formatting.
-It will also check that the JSON is valid.
+The Local JSON Downloader takes the JSON at the given URL(s) and saves it to a text file, with the proper formatting.
+It will also check that the JSON is valid. Basic authentication is supported.
 
 ## Instructions
-To use this, follow the instructions in Sample Config.txt. Please keep in mind that: 
+To use this: 
 
+* Download the [jar][1] and the [sample config][2]
+* Set up your config file (follow the instructions in sample-config.txt)
 * Your data must be at the given url in plain text
-* Basic authentication is supported
+* Run the jar
+
+[1]:https://github.com/jguerinet/local-json-downloader/releases/download/v1.5/local-json-downloader-1.5.jar
+[2]:https://raw.githubusercontent.com/jguerinet/local-json-downloader/master/sample-config.txt
 
 ## Branches
 * master: Contains the main code 
 * dev: Contains WIP code
-* ImmunizeCA: Contains ImmunizeCA specific code, branched off of master. This branch downloads and saves the banner images as well. 
 
-## Directories
-* libs: All of the necessary external libraries (in jar format)
-* src: The source code
+## Gradle Dependencies
+* okhttp:   HTTP client
+* jackson:  JSON parsing
 
 ## Contributors
 * Julien Guerinet
 
-##Copyright
-Copyright (c) Julien Guerinet. All rights reserved.
+## Version History
+See the 'Releases' section
+
+##Copyright 
+    Copyright 2013-2015 Julien Guerinet
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
