@@ -24,7 +24,7 @@ To use this:
 * jackson:  JSON parsing
 
 ## Contributors
-* Julien Guerinet
+* [Julien Guerinet](https://github.com/jguerinet)
 
 ## Version History
 See the 'Releases' section
