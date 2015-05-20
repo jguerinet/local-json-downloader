@@ -12,7 +12,7 @@ To use this:
 * Your data must be at the given url in plain text
 * Run the jar
 
-[1]:https://github.com/jguerinet/local-json-downloader/releases/download/v1.5/local-json-downloader-1.5.jar
+[1]:https://github.com/jguerinet/local-json-downloader/releases/download/v1.6/local-json-downloader-1.6.jar
 [2]:https://raw.githubusercontent.com/jguerinet/local-json-downloader/master/sample-config.txt
 
 ## Branches
