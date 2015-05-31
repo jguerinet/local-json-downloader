@@ -7,13 +7,12 @@ It will also check that the JSON is valid. Basic authentication is supported.
 ## Instructions
 To use this: 
 
-* Download the [jar][1] and the [sample config][2]
+* Download the [jar][1] and the [sample config](sample-config.txt)
 * Set up your config file (follow the instructions in sample-config.txt)
 * Your data must be at the given url in plain text
 * Run the jar
 
 [1]:https://github.com/jguerinet/local-json-downloader/releases/download/v1.6/local-json-downloader-1.6.jar
-[2]:https://raw.githubusercontent.com/jguerinet/local-json-downloader/master/sample-config.txt
 
 ## Branches
 * master: Contains the main code 
@@ -27,10 +26,10 @@ To use this:
 * [Julien Guerinet](https://github.com/jguerinet)
 
 ## Version History
-See the 'Releases' section
+See the [Change Log](CHANGELOG.md).
 
 ##Copyright 
-    Copyright 2013-2015 Julien Guerinet
+    Copyright 2015 Julien Guerinet
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
