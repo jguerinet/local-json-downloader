@@ -131,7 +131,17 @@ public class JsonDataDownloader {
         }
 
         System.out.println("Connecting to " + urlString);
-        Response response = new OkHttpClient().newCall(builder.build()).execute();
+
+        Response response;
+        try{
+            response = new OkHttpClient().newCall(builder.build()).execute();
+        } catch(IOException e){
+            //Catch the exception here to be able to continue a build even if we are not connected
+            System.out.println("IOException while connecting to the URL");
+            System.out.println("Error Message: " + e.getMessage());
+            return;
+        }
+
         int responseCode = response.code();
         System.out.println("Response Code: " + responseCode);
 
