@@ -27,7 +27,6 @@ import okhttp3.Response;
 import java.io.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 /**
  * Main class, executes the main code for downloading and saving the local data
@@ -56,6 +55,14 @@ public class JsonDataDownloader {
      * {@link OkHttpClient} instance
      */
     private static OkHttpClient client;
+    /**
+     * Json {@link ObjectMapper}
+     */
+    private static ObjectMapper mapper;
+    /**
+     * Json {@link ObjectWriter}
+     */
+    private static ObjectWriter writer;
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
             KeyManagementException {
@@ -82,6 +89,12 @@ public class JsonDataDownloader {
 
         // Set up the OkHttp client
         client = new OkHttpClient();
+
+        // Set up the Json object mapper
+        mapper = new ObjectMapper();
+
+        // Set up the Json object writer
+        writer = mapper.writer().withDefaultPrettyPrinter();
 
         // Go through the file, line by line
         String line;
@@ -152,29 +165,19 @@ public class JsonDataDownloader {
             return;
         }
 
-        int responseCode = response.code();
-        System.out.println("Response Code: " + responseCode);
+        System.out.println("Response Code: " + response.code());
 
-        // Only do something if the response code was 200
-        if (responseCode == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode dataJSON = mapper.readTree(response.body().string());
+        // Only do something if the call was a success
+        if (response.isSuccessful()) {
+            // Parse the data into Json format
+            JsonNode dataJson = mapper.readTree(response.body().string());
 
-            // Set up the file writer
-            PrintWriter writer = new PrintWriter(filePath, "UTF-8");
-
-            // Set up the JSON Object Writer
-            ObjectWriter objectWriter = mapper.writer().withDefaultPrettyPrinter();
-
-            // Write the JSON to the file
-            String string = objectWriter.writeValueAsString(dataJSON);
-            writer.print(string);
-            writer.flush();
-            writer.close();
+            // Write the resulting Json onto the file
+            writer.writeValue(new File(filePath), dataJson);
 
             System.out.println("Writing to " + filePath + " complete.");
         } else {
-            System.out.println("Response Code not 200, skipping");
+            System.out.println("Request not successful, skipping");
             System.out.println("Response Message: " + response.message());
         }
     }
