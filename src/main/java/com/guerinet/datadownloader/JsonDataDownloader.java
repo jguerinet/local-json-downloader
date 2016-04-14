@@ -24,9 +24,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import javax.net.ssl.*;
 import java.io.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
 /**
  * Main class, executes the main code for downloading and saving the local data
@@ -87,8 +90,37 @@ public class JsonDataDownloader {
             return;
         }
 
+        // Trust all certificates
+        TrustManager[] trustManager = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+                            throws java.security.cert.CertificateException {}
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+                            throws java.security.cert.CertificateException {}
+                }
+        };
+
+        // Set up the SSL encryption to trust all certificates
+        SSLContext sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, trustManager, new SecureRandom());
+
         // Set up the OkHttp client
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder()
+                .sslSocketFactory(sslContext.getSocketFactory())
+                .hostnameVerifier(new HostnameVerifier() {
+                    @Override
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                })
+                .build();
 
         // Set up the Json object mapper
         mapper = new ObjectMapper();
