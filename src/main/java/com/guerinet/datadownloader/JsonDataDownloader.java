@@ -36,19 +36,19 @@ import java.util.Base64;
 public class JsonDataDownloader {
    /* FILE STRINGS */
     /**
-     * The URL in the file
+     * Header of the URL where the info is
      */
     private static final String URL = "Data URL:";
     /**
-     * The name of the text file you want to save (with an absolute path if desired)
+     * Header of the path of the file to save the info to
      */
-    private static final String FILE_NAME = "File Name:";
+    private static final String FILE_PATH = "File Name:";
     /**
-     * Username for authentication, if any
+     * Header of the username for authentication, if any
      */
     private static final String USERNAME = "Username:";
     /**
-     * Password for authentication, if any
+     * Header of the password for authentication, if any
      */
     private static final String PASSWORD = "Password:";
 
@@ -87,12 +87,12 @@ public class JsonDataDownloader {
             } else if (line.startsWith(PASSWORD)) {
                 // Get the password
                 password = line.replace(PASSWORD, "").trim();
-            } else if (line.startsWith(FILE_NAME)) {
+            } else if (line.startsWith(FILE_PATH)) {
                 // Get the file name - signifies the end of the info for one file
                 // Have a line separation for each file
                 System.out.println();
                 // Download the info with the given information
-                downloadInfo(url, line.replace(FILE_NAME, "").trim(), username, password);
+                downloadInfo(url, line.replace(FILE_PATH, "").trim(), username, password);
                 // Reset everything
                 url = null;
                 username = null;
@@ -102,13 +102,22 @@ public class JsonDataDownloader {
         configReader.close();
     }
 
-    private static void downloadInfo(String urlString, String fileName, String username,
+    /**
+     * Downloads the info using the given parameters
+     *
+     * @param url      URL to download the file from
+     * @param filePath Path of the file to save the info to
+     * @param username Basic auth username, if any
+     * @param password Basic auth password, if any
+     * @throws IOException
+     */
+    private static void downloadInfo(String url, String filePath, String username,
                                      String password) throws IOException {
-        if (urlString == null) {
+        if (url == null) {
             // Make sure there is a URL
             System.out.println("Error: URL Cannot be null. Skipping");
             return;
-        } else if (fileName == null) {
+        } else if (filePath == null) {
             // Make sure there is a file path
             System.out.println("Error: The file name cannot be null. Skipping");
             return;
@@ -117,7 +126,7 @@ public class JsonDataDownloader {
         // Set up the connection
         Request.Builder builder = new Request.Builder()
                 .get()
-                .url(urlString);
+                .url(url);
 
         // Add the basic auth if needed
         if (username != null && password != null) {
@@ -126,7 +135,7 @@ public class JsonDataDownloader {
             builder.addHeader("Authorization", "Basic " + basicAuth);
         }
 
-        System.out.println("Connecting to " + urlString);
+        System.out.println("Connecting to " + url);
 
         Response response;
         try {
@@ -147,7 +156,7 @@ public class JsonDataDownloader {
             JsonNode dataJSON = mapper.readTree(response.body().string());
 
             // Set up the file writer
-            PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+            PrintWriter writer = new PrintWriter(filePath, "UTF-8");
 
             // Set up the JSON Object Writer
             ObjectWriter objectWriter = mapper.writer().withDefaultPrettyPrinter();
@@ -158,7 +167,7 @@ public class JsonDataDownloader {
             writer.flush();
             writer.close();
 
-            System.out.println("Writing to " + fileName + " complete.");
+            System.out.println("Writing to " + filePath + " complete.");
         } else {
             System.out.println("Response Code not 200, skipping");
             System.out.println("Response Message: " + response.message());
