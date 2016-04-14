@@ -1,8 +1,8 @@
-# Local JSON Downloader
+# Local Json Downloader
 
 ## Summary
-The Local JSON Downloader takes the JSON at the given URL(s) and saves it to a text file, with the proper formatting.
-It will also check that the JSON is valid. Basic authentication is supported.
+The Local Json Downloader takes the Json at the given URL(s) and saves it to a text file, with the proper formatting.
+It will also check that the Json is valid. Basic authentication is supported.
 
 ## Instructions
 To use this: 
@@ -12,15 +12,11 @@ To use this:
 * Your data must be at the given url in plain text
 * Run the jar
 
-[1]:https://github.com/jguerinet/local-json-downloader/releases/download/v1.6/local-json-downloader-1.6.jar
-
-## Branches
-* master: Contains the main code 
-* dev: Contains WIP code
+[1]:https://github.com/jguerinet/local-json-downloader/releases/latest
 
 ## Gradle Dependencies
-* okhttp:   HTTP client
-* jackson:  JSON parsing
+* [OkHttp](https://github.com/square/okhttp)
+* [jackson](https://github.com/FasterXML/jackson)
 
 ## Contributors
 * [Julien Guerinet](https://github.com/jguerinet)
@@ -28,8 +24,8 @@ To use this:
 ## Version History
 See the [Change Log](CHANGELOG.md).
 
-##Copyright 
-    Copyright 2015 Julien Guerinet
+## Copyright 
+    Copyright 2015-2016 Julien Guerinet
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
