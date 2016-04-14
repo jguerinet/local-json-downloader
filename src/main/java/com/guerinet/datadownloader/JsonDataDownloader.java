@@ -30,6 +30,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main class, executes the main code for downloading and saving the local data
@@ -120,6 +121,8 @@ public class JsonDataDownloader {
                         return true;
                     }
                 })
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .build();
 
         // Set up the Json object mapper
