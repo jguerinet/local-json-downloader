@@ -19,6 +19,7 @@ package com.guerinet.datadownloader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -51,6 +52,10 @@ public class JsonDataDownloader {
      * Header of the password for authentication, if any
      */
     private static final String PASSWORD = "Password:";
+    /**
+     * {@link OkHttpClient} instance
+     */
+    private static OkHttpClient client;
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
             KeyManagementException {
@@ -74,6 +79,9 @@ public class JsonDataDownloader {
             System.exit(-1);
             return;
         }
+
+        // Set up the OkHttp client
+        client = new OkHttpClient();
 
         // Go through the file, line by line
         String line;
@@ -111,35 +119,32 @@ public class JsonDataDownloader {
      * @param password Basic auth password, if any
      * @throws IOException
      */
-    private static void downloadInfo(String url, String filePath, String username,
-                                     String password) throws IOException {
+    private static void downloadInfo(String url, String filePath, String username, String password) throws IOException {
         if (url == null) {
             // Make sure there is a URL
-            System.out.println("Error: URL Cannot be null. Skipping");
+            System.out.println("Error: URL cannot be null. Skipping");
             return;
         } else if (filePath == null) {
             // Make sure there is a file path
-            System.out.println("Error: The file name cannot be null. Skipping");
+            System.out.println("Error: File path cannot be null. Skipping");
             return;
         }
 
-        // Set up the connection
+        // Build the request
         Request.Builder builder = new Request.Builder()
                 .get()
                 .url(url);
 
         // Add the basic auth if needed
         if (username != null && password != null) {
-            String basicAuth = new String(Base64.getEncoder().encode(
-                    (username + ":" + password).getBytes()));
-            builder.addHeader("Authorization", "Basic " + basicAuth);
+            builder.addHeader("Authorization", Credentials.basic(username, password));
         }
 
         System.out.println("Connecting to " + url);
 
         Response response;
         try {
-            response = new OkHttpClient().newCall(builder.build()).execute();
+            response = client.newCall(builder.build()).execute();
         } catch (IOException e) {
             // Catch the exception here to be able to continue a build even if we are not connected
             System.out.println("IOException while connecting to the URL");
