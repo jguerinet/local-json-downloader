@@ -82,7 +82,7 @@ public class JsonDataDownloader {
         try {
             configReader = new BufferedReader(new FileReader(configPath));
         } catch (FileNotFoundException e) {
-            System.out.println("Error: Config file not found");
+            System.out.println("Error: Config file at path " + configPath + " not found");
             System.exit(-1);
             return;
         }
