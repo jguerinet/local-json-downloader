@@ -61,7 +61,7 @@ public class JsonDataDownloader {
         }
 
         // Instantiate the instance variables
-        String urlString = null;
+        String url = null;
         String username = null;
         String password = null;
 
@@ -80,7 +80,7 @@ public class JsonDataDownloader {
         while ((line = configReader.readLine()) != null) {
             if (line.startsWith(URL)) {
                 // Get the URL
-                urlString = line.replace(URL, "").trim();
+                url = line.replace(URL, "").trim();
             } else if (line.startsWith(USERNAME)) {
                 // Get the username
                 username = line.replace(USERNAME, "").trim();
@@ -92,9 +92,9 @@ public class JsonDataDownloader {
                 // Have a line separation for each file
                 System.out.println();
                 // Download the info with the given information
-                downloadInfo(urlString, line.replace(FILE_NAME, "").trim(), username, password);
+                downloadInfo(url, line.replace(FILE_NAME, "").trim(), username, password);
                 // Reset everything
-                urlString = null;
+                url = null;
                 username = null;
                 password = null;
             }
