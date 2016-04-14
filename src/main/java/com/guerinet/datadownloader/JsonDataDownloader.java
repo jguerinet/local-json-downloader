@@ -67,7 +67,7 @@ public class JsonDataDownloader {
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
             KeyManagementException {
         // Check if the config file path is part of the args
-        String configPath = "../config.txt";
+        String configPath = "config.txt";
         if (args.length == 1) {
             configPath = args[0];
         }
