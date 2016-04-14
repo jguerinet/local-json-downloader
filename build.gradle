@@ -41,7 +41,7 @@ jar {
 
 dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.5.2'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.2'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.2'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.7.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.0'
 }
