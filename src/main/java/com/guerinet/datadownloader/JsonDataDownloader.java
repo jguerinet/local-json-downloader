@@ -54,22 +54,25 @@ public class JsonDataDownloader {
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
             KeyManagementException {
+        // Check if the config file path is part of the args
+        String configPath = "../config.txt";
+        if (args.length == 1) {
+            configPath = args[0];
+        }
+
         // Instantiate the instance variables
         String urlString = null;
         String username = null;
         String password = null;
 
         // Read from the config file
-        BufferedReader configReader = null;
+        BufferedReader configReader;
         try {
-            configReader = new BufferedReader(new FileReader("../config.txt"));
+            configReader = new BufferedReader(new FileReader(configPath));
         } catch (FileNotFoundException e) {
-            try {
-                configReader = new BufferedReader(new FileReader("config.txt"));
-            } catch (FileNotFoundException ex) {
-                System.out.println("Error: Config file not found");
-                System.exit(-1);
-            }
+            System.out.println("Error: Config file not found");
+            System.exit(-1);
+            return;
         }
 
         // Go through the file, line by line
