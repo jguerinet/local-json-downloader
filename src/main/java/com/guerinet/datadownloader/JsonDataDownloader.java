@@ -31,8 +31,7 @@ import java.util.Base64;
 /**
  * Main class, executes the main code for downloading and saving the local data
  * @author Julien Guerinet
- * @version 1.6
- * @since 1.0
+ * @since 1.0.0
  */
 public class JsonDataDownloader {
    /* FILE STRINGS */
@@ -54,49 +53,44 @@ public class JsonDataDownloader {
     private static final String PASSWORD = "Password:";
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,
-            KeyManagementException{
-        //Instantiate the instance variables
+            KeyManagementException {
+        // Instantiate the instance variables
         String urlString = null;
         String username = null;
         String password = null;
 
-        //Read from the config file
+        // Read from the config file
         BufferedReader configReader = null;
-        try{
+        try {
             configReader = new BufferedReader(new FileReader("../config.txt"));
-        }
-        catch(FileNotFoundException e){
-            try{
+        } catch (FileNotFoundException e) {
+            try {
                 configReader = new BufferedReader(new FileReader("config.txt"));
-            }
-            catch(FileNotFoundException ex){
+            } catch (FileNotFoundException ex) {
                 System.out.println("Error: Config file not found");
                 System.exit(-1);
             }
         }
 
-        //Go through the file, line by line
+        // Go through the file, line by line
         String line;
         while ((line = configReader.readLine()) != null) {
-            //Get the URL
-            if(line.startsWith(URL)){
+            if (line.startsWith(URL)) {
+                // Get the URL
                 urlString = line.replace(URL, "").trim();
-            }
-            //Get the username
-            else if(line.startsWith(USERNAME)){
+            } else if (line.startsWith(USERNAME)) {
+                // Get the username
                 username = line.replace(USERNAME, "").trim();
-            }
-            //Get the password
-            else if(line.startsWith(PASSWORD)){
+            } else if (line.startsWith(PASSWORD)) {
+                // Get the password
                 password = line.replace(PASSWORD, "").trim();
-            }
-            //Get the file name - signifies the end of the info for one file
-            else if(line.startsWith(FILE_NAME)){
-                //Have a line separation for each file
+            } else if (line.startsWith(FILE_NAME)) {
+                // Get the file name - signifies the end of the info for one file
+                // Have a line separation for each file
                 System.out.println();
-                //Download the info with the given information
+                // Download the info with the given information
                 downloadInfo(urlString, line.replace(FILE_NAME, "").trim(), username, password);
-                //Reset everything
+                // Reset everything
                 urlString = null;
                 username = null;
                 password = null;
@@ -106,25 +100,24 @@ public class JsonDataDownloader {
     }
 
     private static void downloadInfo(String urlString, String fileName, String username,
-                                     String password) throws IOException{
-        //Make there is a URL
-        if(urlString == null){
+                                     String password) throws IOException {
+        if (urlString == null) {
+            // Make sure there is a URL
             System.out.println("Error: URL Cannot be null. Skipping");
             return;
-        }
-        //Make sure there is a file path
-        else if(fileName == null){
+        } else if (fileName == null) {
+            // Make sure there is a file path
             System.out.println("Error: The file name cannot be null. Skipping");
             return;
         }
 
-        //Set up the connection
+        // Set up the connection
         Request.Builder builder = new Request.Builder()
                 .get()
                 .url(urlString);
 
-        //Add the basic auth if needed
-        if(username != null && password != null){
+        // Add the basic auth if needed
+        if (username != null && password != null) {
             String basicAuth = new String(Base64.getEncoder().encode(
                     (username + ":" + password).getBytes()));
             builder.addHeader("Authorization", "Basic " + basicAuth);
@@ -133,10 +126,10 @@ public class JsonDataDownloader {
         System.out.println("Connecting to " + urlString);
 
         Response response;
-        try{
+        try {
             response = new OkHttpClient().newCall(builder.build()).execute();
-        } catch(IOException e){
-            //Catch the exception here to be able to continue a build even if we are not connected
+        } catch (IOException e) {
+            // Catch the exception here to be able to continue a build even if we are not connected
             System.out.println("IOException while connecting to the URL");
             System.out.println("Error Message: " + e.getMessage());
             return;
@@ -145,26 +138,25 @@ public class JsonDataDownloader {
         int responseCode = response.code();
         System.out.println("Response Code: " + responseCode);
 
-        //Only do something if the response code was 200
-        if(responseCode == 200){
+        // Only do something if the response code was 200
+        if (responseCode == 200) {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode dataJSON = mapper.readTree(response.body().string());
 
-            //Set up the file writer
+            // Set up the file writer
             PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 
-            //Set up the JSON Object Writer
+            // Set up the JSON Object Writer
             ObjectWriter objectWriter = mapper.writer().withDefaultPrettyPrinter();
 
-            //Write the JSON to the file
+            // Write the JSON to the file
             String string = objectWriter.writeValueAsString(dataJSON);
             writer.print(string);
             writer.flush();
             writer.close();
 
             System.out.println("Writing to " + fileName + " complete.");
-        }
-        else{
+        } else {
             System.out.println("Response Code not 200, skipping");
             System.out.println("Response Message: " + response.message());
         }
